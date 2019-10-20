@@ -1,0 +1,9 @@
+
+
+add 16 nearest neighbour pairs
+
+number of positions 
+
+matrix rank
+
+
