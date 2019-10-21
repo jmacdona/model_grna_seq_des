@@ -3,7 +3,7 @@ import sys
 import copy
 import numpy as np
 import numpy.random
-
+import numpy.linalg
 
 # get indicies of nn_pairs_list, where the first base matches first_base
 def get_first_base_indices(nn_pairs_list, first_base):
@@ -64,6 +64,13 @@ def idx_to_str(nn_pairs_list, seq):
     return seqstr
 
 
+def add_matrix_row(row, seqs_mat, seq):
+    for pos in range(0, len(seq)):
+        mat_col = (pos * 16) + seq[pos]
+        seqs_mat[row, mat_col] += 1
+    return
+
+
 spacer_len = 20
 
 picked_dict = {
@@ -89,6 +96,8 @@ picked_list = []
 for ii in range(0, spacer_len):
     picked_list.append(copy.deepcopy(picked_dict))
 
+blank_picked_list = copy.deepcopy(picked_list)
+
 # picked_list[0][0] += 1 # test
 
 print(picked_list)
@@ -109,11 +118,27 @@ print(nn_pairs_list)
 
 print(get_first_base_indices(nn_pairs_list, 'C'))
 
+gen_rounds = 20
 
-for ii in range(0, 16):
-    seq = sample_seq(nn_pairs_list, picked_list)
-    update_picked_list(picked_list, seq)
-    print(str(seq))
-    print(idx_to_str(nn_pairs_list, seq))
+seqs_mat = numpy.zeros((gen_rounds * 16, 320))
 
+all_seqs = []
 
+row = 0
+
+for rdn in range(0, gen_rounds):
+    for ii in range(0, 16):
+        seq = sample_seq(nn_pairs_list, picked_list)
+        update_picked_list(picked_list, seq)
+        print(str(seq))
+        print(idx_to_str(nn_pairs_list, seq))
+        all_seqs.append(seq)
+        add_matrix_row(row, seqs_mat, seq)
+        row += 1
+    picked_list = copy.deepcopy(blank_picked_list)
+
+print(seqs_mat.shape)
+
+mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+
+print(str(mat_rank))
