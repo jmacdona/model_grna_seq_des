@@ -23,7 +23,8 @@ def filter_list(picked_dict, indicies, max_num = 0):
 def sample_seq(nn_pairs_list, picked_list):
     seq = []
     spacer_len = len(picked_list)
-    indicies = range(0, 16)
+    nn_pairs_list_len = len(picked_list[0])
+    indicies = range(0, nn_pairs_list_len)             #16
 
     for pos in range(0, spacer_len):
         picked_dict = picked_list[pos]
@@ -64,33 +65,37 @@ def idx_to_str(nn_pairs_list, seq):
     return seqstr
 
 
-def add_matrix_row(row, seqs_mat, seq):
+def add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len):
     for pos in range(0, len(seq)):
-        mat_col = (pos * 16) + seq[pos]
+        mat_col = (pos * nn_pairs_list_len) + seq[pos]
         seqs_mat[row, mat_col] += 1
     return
 
 
-spacer_len = 20
+spacer_len = 2
 
-picked_dict = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-    10: 0,
-    11: 0,
-    12: 0,
-    13: 0,
-    14: 0,
-    15: 0
-}
+bases = ['A','B']   # ['A','T','G','C']
+
+bases_list = [bases, bases]
+
+#print(bases_list)
+
+nn_pairs = product(*bases_list)
+nn_pairs_list = list(nn_pairs)
+
+#for nn in nn_pairs_list:
+#    print(nn)
+
+print(nn_pairs_list)
+
+nn_pairs_list_len = len(nn_pairs_list)
+
+picked_dict = {}
+
+for ii in range(0, nn_pairs_list_len):
+    picked_dict[ii] = 0
+
+print(picked_dict)
 
 picked_list = []
 for ii in range(0, spacer_len):
@@ -98,44 +103,39 @@ for ii in range(0, spacer_len):
 
 blank_picked_list = copy.deepcopy(picked_list)
 
-# picked_list[0][0] += 1 # test
-
 print(picked_list)
 
-bases = ['A','T','G','C']
+#print(get_first_base_indices(nn_pairs_list, 'C'))
 
-bases_list = [bases, bases]
+gen_rounds = spacer_len * 2
 
-print(bases_list)
-
-nn_pairs = product(*bases_list)
-nn_pairs_list = list(nn_pairs)
-
-for nn in nn_pairs_list:
-    print(nn)
-
-print(nn_pairs_list)
-
-print(get_first_base_indices(nn_pairs_list, 'C'))
-
-gen_rounds = 20
-
-seqs_mat = numpy.zeros((gen_rounds * 16, 320))
+seqs_mat = numpy.zeros((gen_rounds * nn_pairs_list_len, spacer_len*nn_pairs_list_len))
 
 all_seqs = []
+all_seqs_str = []
 
 row = 0
 
 for rdn in range(0, gen_rounds):
-    for ii in range(0, 16):
+    for ii in range(0, nn_pairs_list_len):
         seq = sample_seq(nn_pairs_list, picked_list)
         update_picked_list(picked_list, seq)
-        print(str(seq))
-        print(idx_to_str(nn_pairs_list, seq))
+        #print(str(seq))
+        seq_str = idx_to_str(nn_pairs_list, seq)
+        #print(seq_str)
         all_seqs.append(seq)
-        add_matrix_row(row, seqs_mat, seq)
+        all_seqs_str.append(seq_str)
+        add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
         row += 1
     picked_list = copy.deepcopy(blank_picked_list)
+
+np.set_printoptions(threshold=np.inf)
+
+print(str(len(all_seqs_str)) + " were generated")
+all_seqs_str_set = set(all_seqs_str)
+print(str(len(all_seqs_str_set)) + " were unique")
+
+print(seqs_mat)
 
 print(seqs_mat.shape)
 
