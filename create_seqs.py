@@ -72,9 +72,9 @@ def add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len):
     return
 
 
-spacer_len = 2
+spacer_len = 3
 
-bases = ['A','B'] # ['A','T','G','C']    # ['A','B'] #
+bases = ['A','T','G','C']    # ['A','B'] # ['A','T','G','C']    # ['A','B'] #
 
 bases_list = [bases, bases]
 
@@ -154,10 +154,10 @@ print(str(len(all_seqs_str_set)) + " were unique")
 
 #print(all_seqs_str_set)
 
-print(seqs_mat)
+# print(seqs_mat)
 
-print(seqs_mat.shape)
+# print(seqs_mat.shape)
 
 mat_rank = numpy.linalg.matrix_rank(seqs_mat)
 
-print(str(mat_rank))
+print("Matrix rank: " + str(mat_rank))
