@@ -74,7 +74,7 @@ def add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len):
 
 spacer_len = 2
 
-bases = ['A','B']   # ['A','T','G','C']
+bases = ['A','B'] # ['A','T','G','C']    # ['A','B'] #
 
 bases_list = [bases, bases]
 
@@ -107,7 +107,7 @@ print(picked_list)
 
 #print(get_first_base_indices(nn_pairs_list, 'C'))
 
-gen_rounds = spacer_len * 2
+gen_rounds = spacer_len
 
 seqs_mat = numpy.zeros((gen_rounds * nn_pairs_list_len, spacer_len*nn_pairs_list_len))
 
@@ -115,25 +115,44 @@ all_seqs = []
 all_seqs_str = []
 
 row = 0
+rdn = 0
 
-for rdn in range(0, gen_rounds):
+#for rdn in range(0, gen_rounds):
+while rdn < gen_rounds:
+    all_uniq = True
+    rdn_seqs = []
+    rdn_seqs_str = []
     for ii in range(0, nn_pairs_list_len):
         seq = sample_seq(nn_pairs_list, picked_list)
         update_picked_list(picked_list, seq)
-        #print(str(seq))
         seq_str = idx_to_str(nn_pairs_list, seq)
         #print(seq_str)
-        all_seqs.append(seq)
-        all_seqs_str.append(seq_str)
-        add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
-        row += 1
+        if seq_str in all_seqs_str:
+            all_uniq = False
+        rdn_seqs.append(seq)
+        rdn_seqs_str.append(seq_str)
     picked_list = copy.deepcopy(blank_picked_list)
+    if all_uniq:
+        # rdn accepted
+        rdn += 1
+        for rdn_ii in range(0, len(rdn_seqs)):
+            seq = rdn_seqs[rdn_ii]
+            seq_str = rdn_seqs_str[rdn_ii]
+            all_seqs.append(seq)
+            all_seqs_str.append(seq_str)
+            #update_picked_list(picked_list, seq)
+            add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
+            row += 1
 
 np.set_printoptions(threshold=np.inf)
+
+#print(all_seqs_str)
 
 print(str(len(all_seqs_str)) + " were generated")
 all_seqs_str_set = set(all_seqs_str)
 print(str(len(all_seqs_str_set)) + " were unique")
+
+#print(all_seqs_str_set)
 
 print(seqs_mat)
 
