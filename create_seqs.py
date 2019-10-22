@@ -72,7 +72,7 @@ def add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len):
     return
 
 
-spacer_len = 3
+spacer_len = 22
 
 bases = ['A','T','G','C']    # ['A','B'] # ['A','T','G','C']    # ['A','B'] #
 
