@@ -5,6 +5,8 @@ import numpy as np
 import numpy.random
 import numpy.linalg
 
+from scipy.linalg import null_space
+
 # get indicies of nn_pairs_list, where the first base matches first_base
 def get_first_base_indices(nn_pairs_list, first_base):
     # use list comprehension
@@ -72,7 +74,7 @@ def add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len):
     return
 
 
-spacer_len = 22
+spacer_len = 21     # 22 bp long spacer
 
 bases = ['A','T','G','C']    # ['A','B'] # ['A','T','G','C']    # ['A','B'] #
 
@@ -189,3 +191,7 @@ for ii in range(0, len(all_seqs_str)):
 
 f.close()
 
+ns = null_space(seqs_mat)
+
+#print(ns)
+print(ns.shape)
