@@ -111,7 +111,7 @@ blank_picked_list = copy.deepcopy(picked_list)
 
 #print(get_first_base_indices(nn_pairs_list, 'C'))
 
-gen_rounds = spacer_len
+gen_rounds = spacer_len + 4     # plus 4 additionals
 
 seqs_mat = numpy.zeros((gen_rounds * nn_pairs_list_len, spacer_len*nn_pairs_list_len))
 
