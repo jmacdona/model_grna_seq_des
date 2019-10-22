@@ -76,7 +76,11 @@ spacer_len = 22
 
 bases = ['A','T','G','C']    # ['A','B'] # ['A','T','G','C']    # ['A','B'] #
 
+num_bases = len(bases)
+
 bases_list = [bases, bases]
+
+max_rank = (num_bases*num_bases*spacer_len) - ( (spacer_len - 1) * num_bases )
 
 #print(bases_list)
 
@@ -86,7 +90,7 @@ nn_pairs_list = list(nn_pairs)
 #for nn in nn_pairs_list:
 #    print(nn)
 
-print(nn_pairs_list)
+#print(nn_pairs_list)
 
 nn_pairs_list_len = len(nn_pairs_list)
 
@@ -95,7 +99,7 @@ picked_dict = {}
 for ii in range(0, nn_pairs_list_len):
     picked_dict[ii] = 0
 
-print(picked_dict)
+#print(picked_dict)
 
 picked_list = []
 for ii in range(0, spacer_len):
@@ -103,7 +107,7 @@ for ii in range(0, spacer_len):
 
 blank_picked_list = copy.deepcopy(picked_list)
 
-print(picked_list)
+#print(picked_list)
 
 #print(get_first_base_indices(nn_pairs_list, 'C'))
 
@@ -111,11 +115,16 @@ gen_rounds = spacer_len
 
 seqs_mat = numpy.zeros((gen_rounds * nn_pairs_list_len, spacer_len*nn_pairs_list_len))
 
+best_score = spacer_len*nn_pairs_list_len + 1
+
 all_seqs = []
 all_seqs_str = []
 
 row = 0
 rdn = 0
+
+score = best_score
+max_rank_reached = False
 
 #for rdn in range(0, gen_rounds):
 while rdn < gen_rounds:
@@ -142,6 +151,11 @@ while rdn < gen_rounds:
             all_seqs_str.append(seq_str)
             #update_picked_list(picked_list, seq)
             add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
+            mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+            #print("Matrix_rank:\t" + str(row) + "\t" + str(mat_rank) + "\t" + str(max_rank))
+            if mat_rank == max_rank and max_rank_reached == False:
+                score = row
+                max_rank_reached = True
             row += 1
 
 np.set_printoptions(threshold=np.inf)
@@ -158,6 +172,10 @@ print(str(len(all_seqs_str_set)) + " were unique")
 
 # print(seqs_mat.shape)
 
-mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+print("Max_Matrix_rank:\t" + str(max_rank))
 
-print("Matrix rank: " + str(mat_rank))
+mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+print("Final_Matrix_rank:\t" + str(mat_rank))
+
+print("score:\t" + str(score))
+
