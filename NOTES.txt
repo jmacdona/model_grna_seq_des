@@ -6,4 +6,14 @@ number of positions
 
 matrix rank
 
+max possible rank:
+
+(num_bases*num_bases*spacer_len) - ( (spacer_len - 1) * num_bases )
+
+if 22 sites and 4 bases:
+
+4*4*22 - ( (22 - 1) * 4 )
+
+
+
 

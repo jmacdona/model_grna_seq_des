@@ -179,3 +179,13 @@ print("Final_Matrix_rank:\t" + str(mat_rank))
 
 print("score:\t" + str(score))
 
+print("outputting sequences")
+
+f = open('designed_spacers.fa', 'w')
+
+for ii in range(0, len(all_seqs_str)):
+    f.write("> spacer" + str(ii) + "\n")
+    f.write(all_seqs_str[ii] + "\n")
+
+f.close()
+
