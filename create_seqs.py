@@ -128,6 +128,10 @@ rdn = 0
 score = best_score
 max_rank_reached = False
 
+last_rank = 0
+
+mat_info = []
+
 #for rdn in range(0, gen_rounds):
 while rdn < gen_rounds:
     all_uniq = True
@@ -154,10 +158,15 @@ while rdn < gen_rounds:
             #update_picked_list(picked_list, seq)
             add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
             mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+            if mat_rank > last_rank:
+                mat_info.append("(+)")
+            else:
+                mat_info.append("(-)")
             #print("Matrix_rank:\t" + str(row) + "\t" + str(mat_rank) + "\t" + str(max_rank))
             if mat_rank == max_rank and max_rank_reached == False:
                 score = row
                 max_rank_reached = True
+            last_rank = mat_rank
             row += 1
 
 np.set_printoptions(threshold=np.inf)
@@ -186,7 +195,7 @@ print("outputting sequences")
 f = open('designed_spacers.fa', 'w')
 
 for ii in range(0, len(all_seqs_str)):
-    f.write("> spacer" + str(ii) + "\n")
+    f.write("> spacer" + str(ii) + "\t" + mat_info[ii] + "\n")
     f.write(all_seqs_str[ii] + "\n")
 
 f.close()
