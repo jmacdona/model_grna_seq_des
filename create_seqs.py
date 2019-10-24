@@ -149,7 +149,6 @@ while rdn < gen_rounds:
     picked_list = copy.deepcopy(blank_picked_list)
     if all_uniq:
         # rdn accepted
-        rdn += 1
         for rdn_ii in range(0, len(rdn_seqs)):
             seq = rdn_seqs[rdn_ii]
             seq_str = rdn_seqs_str[rdn_ii]
@@ -158,16 +157,19 @@ while rdn < gen_rounds:
             #update_picked_list(picked_list, seq)
             add_matrix_row(row, seqs_mat, seq, nn_pairs_list_len)
             mat_rank = numpy.linalg.matrix_rank(seqs_mat)
+            this_mat_info = str(rdn) + "\t" + str(rdn_ii)
             if mat_rank > last_rank:
-                mat_info.append("(+)")
+                this_mat_info += "\t(+)"
             else:
-                mat_info.append("(-)")
+                this_mat_info += "\t(-)"
             #print("Matrix_rank:\t" + str(row) + "\t" + str(mat_rank) + "\t" + str(max_rank))
             if mat_rank == max_rank and max_rank_reached == False:
                 score = row
                 max_rank_reached = True
+            mat_info.append(this_mat_info)
             last_rank = mat_rank
             row += 1
+        rdn += 1
 
 np.set_printoptions(threshold=np.inf)
 
